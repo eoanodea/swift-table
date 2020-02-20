@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:helloStoryboard.xcodeproj">
+      location = "self:/Users/eoan/Sites/testing/swift/swift-api-v2/swiftApiV2.xcodeproj">
    </FileRef>
 </Workspace>

@@ -10,18 +10,52 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
-    let data: [String] = ["Item 1", "Item 2", "Item 3", "Item 4"]
+    var tableData = [Users]()
     
     var currentItem: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchUsers()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+    
+    func fetchUsers() {
+        guard let url = URL(string: "http://dev.thelockerroom.ie/api/users") else { return }
+        
+        let session = URLSession.shared
+        session.dataTask(with: url) { (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    
+                    guard let jsonArr = json as? [[String: Any]] else {
+                        return
+                    }
+                    
+                    for dic in jsonArr {
+                        self.tableData.append(Users(dic))
+                    }
+
+                    DispatchQueue.main.async {
+                     self.tableView.reloadData()
+                    }
+                    
+                } catch {
+                    print("Error! \(error)")
+                }
+            }
+            
+        }.resume()
     }
 
     // MARK: - Table view data source
@@ -33,7 +67,7 @@ class TableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return data.count
+        return tableData.count
     }
 
 
@@ -41,7 +75,7 @@ class TableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
         // Configure the cell...
-        cell.textLabel?.text = data[indexPath.row]
+        cell.textLabel?.text = tableData[indexPath.row].name
 
         return cell
     }
@@ -86,8 +120,13 @@ class TableViewController: UITableViewController {
     // MARK: - Navigation
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentItem = data[indexPath.row]
-        performSegue(withIdentifier: "showDetail", sender: nil)
+        if(tableData.count > 0) {
+            currentItem = tableData[indexPath.row].id
+            performSegue(withIdentifier: "showDetail", sender: nil)
+            print("Got current item! \(currentItem)")
+        } else {
+            print("No data to select")
+        }
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -95,7 +134,7 @@ class TableViewController: UITableViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         if let viewController = segue.destination as? ViewController {
-            viewController.text = currentItem
+            viewController.id = currentItem
         }
     }
     
