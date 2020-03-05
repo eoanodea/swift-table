@@ -26,13 +26,10 @@ class TableViewController: UITableViewController {
     }
     
     func fetchUsers() {
-        guard let url = URL(string: "http://dev.thelockerroom.ie/api/users") else { return }
+        guard let url = URL(string: "https://dev-the-locker-room.herokuapp.com/api/users") else { return }
         
         let session = URLSession.shared
         session.dataTask(with: url) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
             
             if let data = data {
                 do {

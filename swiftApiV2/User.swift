@@ -17,22 +17,22 @@ struct User: Codable {
     var confirmed: Bool
     var blocked: Bool
     var isPrivate: Bool
-//    var followers: Array<Any>
+    var followers: Array<Follow>
 //    var following: Array<Any>
 //    var customer: Array<Any>
-    var stripeSeller: String
+//    var stripeSeller: String
     
-    
-    
-    init(_ dictionary: [String: Any]) {
-        self.id = dictionary["_id"] as? String ?? ""
-        self.name = dictionary["name"] as? String ?? ""
-        self.email = dictionary["email"] as? String ?? ""
-        self.created = dictionary["created"] as? String ?? ""
-        self.updated = dictionary["updated"] as? String ?? ""
-        self.confirmed = dictionary["confirmed"] as? Bool ?? false
-        self.blocked = dictionary["blocked"] as? Bool ?? false
-        self.isPrivate = dictionary["private"] as? Bool ?? false
-        self.stripeSeller = dictionary["stripe_seller"] as? String ?? ""
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case email
+        case created
+        case updated
+        case confirmed
+        case blocked
+        case isPrivate = "private"
+//        case following
+        case followers
     }
+    
 }

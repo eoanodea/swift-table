@@ -27,25 +27,60 @@ class ViewController: UIViewController {
         textView.text = id
     }
     
-    func fetchUser(userId: String) {
-        guard let url = URL(string: "http://dev.thelockerroom.ie/api/user/\(userId)") else { return }
+    func fetchUsers() {
+        guard let url = URL(string: "https://dev-the-locker-room.herokuapp.com/api/users") else { return }
         
         let session = URLSession.shared
         session.dataTask(with: url) { (data, response, error) in
-            if let response = response {
-                print(response)
-            }
             
             if let data = data {
-                
                 do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [User]
+                    print("DATA!!! \(data)")
+//                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+//
+//                    guard let jsonArr = json as? [[String: Any]] else {
+//                        return
+//                    }
+//
+//                    for dic in jsonArr {
+//                        self.tableData.append(Users(dic))
+//                    }
+//
+//                    DispatchQueue.main.async {
+//                     self.tableView.reloadData()
+//                    }
                     
-                    print("JSON!!! \(String(describing: json))")
+                } catch {
+                    print("Error! \(error)")
+                }
+            }
+            
+        }.resume()
+    }
+    
+    func fetchUser(userId: String) {
+        guard let url = URL(string: "https://dev-the-locker-room.herokuapp.com/api/user/\(userId)") else { return }
+        
+        let session = URLSession.shared
+        session.dataTask(with: url) { (data, response, error) in
+            if let data = data {
+//                if let jsonString = String(data: data, encoding: .utf8) {
+//                    print("Hello! \(jsonString)")
+//
+//                }
+//                print("DATA \(data) response \(String(describing: response))")
+                do {
+                    let res = try JSONDecoder().decode(User.self, from: data)
                     
-                    if let json = User() {
-                     self.user = json
-                    }
+                    print("RES!! \(res)")
+//                    print("DATA!!! \(data) \(response) \(error)")
+//                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [User]
+//
+//                    print("JSON!!! \(String(describing: json))")
+                    
+//                    if let json = User() {
+//                     self.user = json
+//                    }
                    
 //                    if let dictionary = json as? [String: Any] {
 //                        for dic in dictionary {
