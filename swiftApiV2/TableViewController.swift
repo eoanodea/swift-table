@@ -10,6 +10,7 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
+    var baseUrl: String = Bundle.main.infoDictionary!["BaseURL"] as! String
     var tableData = [Users]()
     
     var currentItem: String = ""
@@ -26,7 +27,7 @@ class TableViewController: UITableViewController {
     }
     
     func fetchUsers() {
-        guard let url = URL(string: "https://dev-the-locker-room.herokuapp.com/api/users") else { return }
+        guard let url = URL(string: "\(baseUrl)/api/users") else { return }
         
         let session = URLSession.shared
         session.dataTask(with: url) { (data, response, error) in
