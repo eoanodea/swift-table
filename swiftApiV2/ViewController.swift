@@ -18,44 +18,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        textView.text = id
+        textView.text = "Loading..."
         fetchUser(userId: id)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        textView.text = id
-    }
-    
-    func fetchUsers() {
-        guard let url = URL(string: "https://dev-the-locker-room.herokuapp.com/api/users") else { return }
-        
-        let session = URLSession.shared
-        session.dataTask(with: url) { (data, response, error) in
-            
-            if let data = data {
-                do {
-                    print("DATA!!! \(data)")
-//                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-//
-//                    guard let jsonArr = json as? [[String: Any]] else {
-//                        return
-//                    }
-//
-//                    for dic in jsonArr {
-//                        self.tableData.append(Users(dic))
-//                    }
-//
-//                    DispatchQueue.main.async {
-//                     self.tableView.reloadData()
-//                    }
-                    
-                } catch {
-                    print("Error! \(error)")
-                }
-            }
-            
-        }.resume()
     }
     
     func fetchUser(userId: String) {
@@ -64,37 +32,12 @@ class ViewController: UIViewController {
         let session = URLSession.shared
         session.dataTask(with: url) { (data, response, error) in
             if let data = data {
-//                if let jsonString = String(data: data, encoding: .utf8) {
-//                    print("Hello! \(jsonString)")
-//
-//                }
-//                print("DATA \(data) response \(String(describing: response))")
                 do {
-                    let res = try JSONDecoder().decode(User.self, from: data)
+                    let user = try JSONDecoder().decode(User.self, from: data)
                     
-                    print("RES!! \(res)")
-//                    print("DATA!!! \(data) \(response) \(error)")
-//                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [User]
-//
-//                    print("JSON!!! \(String(describing: json))")
-                    
-//                    if let json = User() {
-//                     self.user = json
-//                    }
-                   
-//                    if let dictionary = json as? [String: Any] {
-//                        for dic in dictionary {
-//                            self.user = dic
-//                        }
-//                    }
-                    
-//                   guard let jsonArr = json as? [[String: Any]] else {
-//                       return
-//                   }
-//
-//                   for dic in jsonArr {
-//                       self.user.append(User(dic))
-//                   }
+                    DispatchQueue.main.async {
+                        self.updateUI(user: user)
+                    }
 
                 } catch {
                     print("Error! \(error)")
@@ -102,6 +45,10 @@ class ViewController: UIViewController {
             }
             
         }.resume()
+    }
+    
+    func updateUI(user: User) {
+        textView.text = user.name
     }
     
 }
